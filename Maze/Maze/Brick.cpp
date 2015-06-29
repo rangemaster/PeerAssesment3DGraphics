@@ -19,8 +19,7 @@ Brick::~Brick()
 
 double Brick::size(void)
 {
-	double value = 0;
-	return value;
+	return width * height * depth;
 }
 bool Brick::test(void)
 {

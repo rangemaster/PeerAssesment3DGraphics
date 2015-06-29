@@ -12,8 +12,9 @@ public:
 	{
 		Brick brick(10, 10, 10, 10, 10, 10);
 		bool succes = brick.test();
+		Messager::Message("Test Brick class");
 		if (succes)
-			Messager::Message("Succesfull");
+			Messager::Succes("Succesfull");
 		else 
 			Messager::Error("Not Succesfull");
 	}
