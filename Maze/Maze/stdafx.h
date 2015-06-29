@@ -12,6 +12,9 @@
 #include <tchar.h>
 
 #include <GL\freeglut.h>
+#include <functional>
+#include <vector>
+#include "Messager.h"
 #include <math.h>
 #include <gl\GL.h>
 #include "cube.h"
@@ -20,9 +23,7 @@
 #include <iostream>
 #include <string>
 #include "Brick.h"
+#include "Road.h"
 
-//int width, height;
-//float rotation = M_PI / 2;
-//float cameraAngle = 0;
 
 // TODO: reference additional headers your program requires here

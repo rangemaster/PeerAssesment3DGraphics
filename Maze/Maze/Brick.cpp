@@ -1,8 +1,9 @@
 #include "stdafx.h"
 #include "Brick.h"
+#include "cube.h"
 
 
-Brick::Brick(int xPos, int yPos, int zPos, int widthBrick, int heightBrick, int depthBrick)
+Brick::Brick(double xPos, double yPos, double zPos, double widthBrick, double heightBrick, double depthBrick)
 {
 	x = xPos;
 	y = yPos;
@@ -31,4 +32,8 @@ bool Brick::test(void)
 	if (depth != 10)return false;
 	if (size() != 1000)return false;
 	return true;
+}
+void Brick::draw(void)
+{
+	drawCube(x, y, z, width, height, depth);
 }

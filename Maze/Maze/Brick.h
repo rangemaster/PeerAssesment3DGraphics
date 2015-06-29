@@ -3,8 +3,8 @@
 class Brick
 {
 public:
-	int x, y, z, width, height, depth;
-	Brick(int, int, int, int, int, int);
+	double x, y, z, width, height, depth;
+	Brick(double, double, double, double, double, double);
 	~Brick();
 	double size(void);
 
@@ -19,5 +19,6 @@ public:
 			Messager::Error("Not Succesfull");
 	}
 	bool test(void);
+	void draw(void);
 };
 

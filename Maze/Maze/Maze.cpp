@@ -2,24 +2,46 @@
 //
 
 #include "stdafx.h"
-
 using namespace std;
 
 int width, height;
 float rotation = M_PI / 2;
 float cameraAngle = 0;
 
-void PopMatrix(void (*function)(void))
+double posx, posy, posz;
+
+
+vector<Road> *maze_map;
+
+Road *road1, *road2, *road3;
+
+
+void PopRoad(Road &road)
 {
 	glPushMatrix();
-	function();
-	//drawCube();
+	road.drawRoad();
+	glPopMatrix();
+}
+void PopBrick(double x, double y, double z, double w, double h, double d)
+{
+	glPushMatrix();
+	drawCube(x, y, z, w, h, d);
 	glPopMatrix();
 }
 void DrawToDisplay()
 {
-	//PopMatrix(drawCube);
-	PopMatrix(drawTriangle);
+	//PopRoad(&maze_map->at(0));
+	//glTranslatef(0, 0, 5);
+	//PopRoad(&maze_map->at(1));
+	//glTranslatef(0, 0,5);
+	//PopRoad(&maze_map->at(2));
+
+	PopRoad(*road1);
+	glTranslatef(0, 0, 5);
+	PopRoad(*road2);
+	glTranslatef(0, 0, -10);
+	PopRoad(*road3);
+	
 }
 void UpdatePlayerPos()
 {}
@@ -40,6 +62,8 @@ void Display()
 
 	glEnable(GL_DEPTH_TEST);
 
+	glTranslatef(posx, posy, posz);
+
 	DrawToDisplay();
 
 	glDisable(GL_DEPTH_TEST);
@@ -57,6 +81,24 @@ void Display()
 }
 void SetKeyboard(unsigned char key, bool pressed)
 {
+	switch (key)
+	{
+	case 27:
+		exit(0);
+		break;
+	case '4':
+		cameraAngle -= 0.1;
+		break;
+	case '6':
+		cameraAngle += 0.1;
+		break;
+	case '2':
+		posy -= 0.1;
+		break;
+	case '8':
+		posy += 0.1;
+		break;
+	}
 }
 void KeyPressed(unsigned char key, int x, int y){ SetKeyboard(key, true); }
 void KeyReleased(unsigned char key, int x, int y){ SetKeyboard(key, false); }
@@ -93,12 +135,28 @@ void GlutInit(int argc, char* argv[])
 	glutMainLoop();
 }
 
+void Init(int argc, char* argv[])
+{
+	cout << "Init" << endl;
+	maze_map = new vector < Road >;
+
+	//maze_map->push_back(*new Road(new Brick(0, 0, 0, 5, 0.1, 5), ROAD_STRAIGHT, ROAD_FRONT_FACING));
+	//maze_map->push_back(*new Road(new Brick(0, 0, 0, 4, 0.1, 4), ROAD_DEADEND, ROAD_RIGHT_FACING));
+	//maze_map->push_back(*new Road(new Brick(0, 0, 0, 5, 0.1, 5), ROAD_EMPTY_SPOT, ROAD_FRONT_FACING));
+
+	road1 = new Road(*new Brick(0, 0, 0, 5, 0.1, 5), ROAD_STRAIGHT, ROAD_FRONT_FACING);
+	road2 = new Road(*new Brick(0, 0, 0, 5, 0.1, 5), ROAD_DEADEND, ROAD_FRONT_FACING);
+	road3 = new Road(*new Brick(0, 0, 0, 5, 0.1, 5), ROAD_EMPTY_SPOT, ROAD_FRONT_FACING);
+
+	GlutInit(argc, argv);
+
+}
 int _tmain(int argc, char* argv[])
 {
 	string line;
 	cout << "Start Program" << endl;
 
-	GlutInit(argc, argv);
+	Init(argc, argv);
 
 	cout << "\nHit Enter to exit" << endl;
 	getline(cin, line);
