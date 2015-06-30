@@ -19,24 +19,38 @@ MazeEngeneer *engeneer;
 void PopRoad(Road &road)
 {
 	glPushMatrix();
+	glTranslatef(road.at(0).x, road.at(0).y, road.at(0).z);
 	road.drawRoad();
+	glTranslatef(-road.at(0).x, -road.at(0).y, -road.at(0).z);
 	glPopMatrix();
 }
 void PopBrick(double x, double y, double z, double w, double h, double d)
 {
 	glPushMatrix();
+	glTranslatef(x, y, z);
 	drawCube(x, y, z, w, h, d);
+	glTranslatef(-x, -y, -z);
 	glPopMatrix();
 }
 void DrawToDisplay()
 {
-	PopRoad(maze_map->at(0));
-	glTranslatef(0, 0, 5);
-	PopRoad(maze_map->at(1));
-	glTranslatef(0, 0, -10);
-	PopRoad(maze_map->at(2));
-	glTranslatef(5, 0, 10);
-	PopRoad(maze_map->at(3));
+	int index = 0;
+	for (int x = 0; x < MAZE_WIDTH; x++)
+	{
+		for (int y = 0; y < MAZE_HEIGHT; y++)
+		{
+			PopRoad(maze_map->at(index++));
+		}
+	}
+	//PopRoad(maze_map->at(0));
+	//glTranslatef(0, 0, 5);
+	//PopRoad(maze_map->at(1));
+	//glTranslatef(0, 0, -10);
+	//PopRoad(maze_map->at(2));
+	//glTranslatef(5, 0, 10);
+	//PopRoad(maze_map->at(3));
+	//glTranslatef(0, 0, -5);
+	//PopRoad(maze_map->at(4));
 
 	//PopRoad(*road1);
 	//glTranslatef(0, 0, 5);
@@ -99,6 +113,18 @@ void SetKeyboard(unsigned char key, bool pressed)
 		break;
 	case '8':
 		posy += 0.1;
+		break;
+	case 'a':
+		posz -= 0.1;
+		break;
+	case 'd':
+		posz += 0.1;
+		break;
+	case 'w':
+		posx -= 0.1;
+		break;
+	case 's':
+		posx += 0.1;
 		break;
 	}
 }
