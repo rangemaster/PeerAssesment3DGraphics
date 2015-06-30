@@ -13,7 +13,7 @@ double posx, posy, posz;
 
 vector<Road> *maze_map;
 
-Road *road1, *road2, *road3;
+MazeEngeneer *engeneer;
 
 
 void PopRoad(Road &road)
@@ -30,18 +30,20 @@ void PopBrick(double x, double y, double z, double w, double h, double d)
 }
 void DrawToDisplay()
 {
-	//PopRoad(&maze_map->at(0));
-	//glTranslatef(0, 0, 5);
-	//PopRoad(&maze_map->at(1));
-	//glTranslatef(0, 0,5);
-	//PopRoad(&maze_map->at(2));
-
-	PopRoad(*road1);
+	PopRoad(maze_map->at(0));
 	glTranslatef(0, 0, 5);
-	PopRoad(*road2);
+	PopRoad(maze_map->at(1));
 	glTranslatef(0, 0, -10);
-	PopRoad(*road3);
-	
+	PopRoad(maze_map->at(2));
+	glTranslatef(5, 0, 10);
+	PopRoad(maze_map->at(3));
+
+	//PopRoad(*road1);
+	//glTranslatef(0, 0, 5);
+	//PopRoad(*road2);
+	//glTranslatef(0, 0, -10);
+	//PopRoad(*road3);
+
 }
 void UpdatePlayerPos()
 {}
@@ -132,21 +134,16 @@ void GlutInit(int argc, char* argv[])
 	glutMouseFunc(MouseButton);
 	glutMotionFunc(MouseMotion);
 	glutIdleFunc(IdleFunc);
-	glutMainLoop();
 }
 
 void Init(int argc, char* argv[])
 {
 	cout << "Init" << endl;
-	maze_map = new vector < Road >;
+	engeneer = new MazeEngeneer();
+	maze_map = new vector < Road > ;
 
-	//maze_map->push_back(*new Road(new Brick(0, 0, 0, 5, 0.1, 5), ROAD_STRAIGHT, ROAD_FRONT_FACING));
-	//maze_map->push_back(*new Road(new Brick(0, 0, 0, 4, 0.1, 4), ROAD_DEADEND, ROAD_RIGHT_FACING));
-	//maze_map->push_back(*new Road(new Brick(0, 0, 0, 5, 0.1, 5), ROAD_EMPTY_SPOT, ROAD_FRONT_FACING));
-
-	road1 = new Road(*new Brick(0, 0, 0, 5, 0.1, 5), ROAD_STRAIGHT, ROAD_FRONT_FACING);
-	road2 = new Road(*new Brick(0, 0, 0, 5, 0.1, 5), ROAD_DEADEND, ROAD_FRONT_FACING);
-	road3 = new Road(*new Brick(0, 0, 0, 5, 0.1, 5), ROAD_EMPTY_SPOT, ROAD_FRONT_FACING);
+	engeneer->CreateMaze(DIFFICULTY_EASY);
+	engeneer->ConverMaze(maze_map);
 
 	GlutInit(argc, argv);
 
@@ -157,6 +154,8 @@ int _tmain(int argc, char* argv[])
 	cout << "Start Program" << endl;
 
 	Init(argc, argv);
+
+	glutMainLoop();
 
 	cout << "\nHit Enter to exit" << endl;
 	getline(cin, line);
