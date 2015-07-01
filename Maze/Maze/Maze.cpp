@@ -4,17 +4,15 @@
 #include "stdafx.h"
 using namespace std;
 
+int previousMouseX, previousMouseY;
 int width, height;
 float rotation = M_PI / 2;
 float cameraAngle = 0;
-
 double posx, posy, posz;
-
+bool p_forward, p_backward, p_left, p_right, p_zoomout, p_zoomin;
 
 vector<Road> *maze_map;
-
 MazeEngeneer *engeneer;
-
 
 void PopRoad(Road &road)
 {
@@ -22,14 +20,6 @@ void PopRoad(Road &road)
 	glTranslatef(road.at(0).x, road.at(0).y, road.at(0).z);
 	road.drawRoad();
 	glTranslatef(-road.at(0).x, -road.at(0).y, -road.at(0).z);
-	glPopMatrix();
-}
-void PopBrick(double x, double y, double z, double w, double h, double d)
-{
-	glPushMatrix();
-	glTranslatef(x, y, z);
-	drawCube(x, y, z, w, h, d);
-	glTranslatef(-x, -y, -z);
 	glPopMatrix();
 }
 void DrawToDisplay()
@@ -42,25 +32,46 @@ void DrawToDisplay()
 			PopRoad(maze_map->at(index++));
 		}
 	}
-	//PopRoad(maze_map->at(0));
-	//glTranslatef(0, 0, 5);
-	//PopRoad(maze_map->at(1));
-	//glTranslatef(0, 0, -10);
-	//PopRoad(maze_map->at(2));
-	//glTranslatef(5, 0, 10);
-	//PopRoad(maze_map->at(3));
-	//glTranslatef(0, 0, -5);
-	//PopRoad(maze_map->at(4));
-
-	//PopRoad(*road1);
-	//glTranslatef(0, 0, 5);
-	//PopRoad(*road2);
-	//glTranslatef(0, 0, -10);
-	//PopRoad(*road3);
-
+	glTranslatef(-posx, -posy, -posz);
+	drawTriangle();
+	glTranslatef(posx, posy, posz);
+	cout << "CameraAngle: " << ToDegrees(cameraAngle) << endl;
 }
+void MoveXP(){ posx += 0.1; }
+void MoveXM(){ posx -= 0.1; }
+void MoveZP(){ posz += 0.1; }
+void MoveZM(){ posz -= 0.1; }
 void UpdatePlayerPos()
-{}
+{
+	float angle = ToDegrees(cameraAngle);
+	if (p_zoomout)
+		posy -= 0.1;
+	else if (p_zoomin)
+		posy += 0.1;
+
+	if (p_left || p_right)
+	{
+		if (angle < 45 || angle >= 315)
+			(p_left ? MoveZM() : MoveZP());
+		else if (angle >= 45 && angle < 135)
+			(p_left ? MoveXP() : MoveXM());
+		else if (angle >= 135 && angle < 225)
+			(p_left ? MoveZP() : MoveZM());
+		else if (angle >= 225 && angle < 315)
+			(p_left ? MoveXM() : MoveXP());
+	}
+	if (p_forward || p_backward)
+	{
+		if (angle < 45 || angle >= 315)
+			(p_forward ? MoveXP() : MoveXM());
+		else if (angle >= 45 && angle < 135)
+			(p_forward ? MoveZP() : MoveZM());
+		else if (angle >= 135 && angle < 225)
+			(p_forward ? MoveXM() : MoveXP());
+		else if (angle >= 225 && angle < 315)
+			(p_forward ? MoveZM() : MoveZP());
+	}
+}
 void InitGraphics(){}
 void Display()
 {
@@ -109,31 +120,55 @@ void SetKeyboard(unsigned char key, bool pressed)
 		cameraAngle += 0.1;
 		break;
 	case '2':
-		posy -= 0.1;
+		p_zoomout = pressed;
 		break;
 	case '8':
-		posy += 0.1;
+		p_zoomin = pressed;
 		break;
 	case 'a':
-		posz -= 0.1;
+		p_left = pressed;
 		break;
 	case 'd':
-		posz += 0.1;
+		p_right = pressed;
 		break;
 	case 'w':
-		posx -= 0.1;
+		p_forward = pressed;
 		break;
 	case 's':
-		posx += 0.1;
+		p_backward = pressed;
 		break;
 	}
 }
 void KeyPressed(unsigned char key, int x, int y){ SetKeyboard(key, true); }
 void KeyReleased(unsigned char key, int x, int y){ SetKeyboard(key, false); }
 void MouseButton(int button, int state, int x, int y)
-{}
+{
+	//cout << "Mouse pressed: " << state << ", " << x << ", " << y << endl;
+	if (state == 0)
+	{
+		previousMouseX = x;
+		previousMouseY = y;
+	}
+}
 void MouseMotion(int x, int y)
-{}
+{
+	//cout << "Mouse moved: " << x << ", " << y << endl;
+	int difX = sqrt(pow(x - previousMouseX, 2));
+	if (x > previousMouseX)
+	{
+		cout << "Moving right [" << difX << "]" << endl;
+		cameraAngle += (double)((double)difX / 20);
+	}
+	else if (x < previousMouseX)
+	{
+		cout << "Moving left [" << difX << "]" << endl;
+		cameraAngle -= (double)((double)difX / 20);
+	}
+	cameraAngle = mod(cameraAngle, M_PI * 2);
+
+	previousMouseX = x;
+	previousMouseY = y;
+}
 void IdleFunc()
 {
 	rotation = glutGet(GLUT_ELAPSED_TIME) / 50.0f;

@@ -13,20 +13,30 @@ MazeEngeneer::~MazeEngeneer()
 
 void MazeEngeneer::CreateMaze(int dif)
 {
-	MazeEngeneer::maze[0][0] = MazePuzzelPart(0, 0, 0, 5, 0.1, 5, ROAD_STRAIGHT, ROAD_RIGHT_FACING, 0);
-
+	float indexX = 0, indexY = 0;
+	for (int y = 0; y < MAZE_HEIGHT; y++)
+	{
+		indexX = 0;
+		for (int x = 0; x < MAZE_WIDTH; x++)
+		{
+			MazeEngeneer::maze[y][x] = MazePuzzelPart(indexY, 0, indexX, TILE_WIDTH, TILE_HEIGHT, TILE_DEPTH, ROAD_TCROSS, ROAD_RIGHT_FACING, 0);
+			indexX += maze[0][0].d / 2;
+		}
+		indexY += maze[0][0].w / 2;
+	}
+	MazeEngeneer::maze[0][0] = MazePuzzelPart(maze[0][0].x, maze[0][0].y, maze[0][0].z, maze[0][0].w, maze[0][0].h, maze[0][0].d, ROAD_CORNER, ROAD_FRONT_FACING, 0);
+	MazeEngeneer::maze[0][1] = MazePuzzelPart(maze[0][1].x, maze[0][1].y, maze[0][1].z, maze[0][1].w, maze[0][1].h, maze[0][1].d, ROAD_TCROSS, ROAD_FRONT_FACING, 0);
 	Messager::Succes("Maze Succesfully created");
 }
 
 void MazeEngeneer::ConverMaze(std::vector<Road> *maze_map)
 {
-	int index = 0;
-	for (int x = 0; x < MAZE_HEIGHT; x++)
+	float index = 0;
+	for (int y = 0; y < MAZE_WIDTH; y++)
 	{
-		for (int y = 0; y < MAZE_WIDTH; y++)
+		for (int x = 0; x < MAZE_HEIGHT; x++)
 		{
-			maze_map->push_back(*new Road(*new Brick(maze[x][y].x, maze[x][y].y, index, 5, 0.1, 5), maze[x][y].state, maze[x][y].dir));
-			index += 2.5;
+			maze_map->push_back(*new Road(*new Brick(maze[y][x].x, maze[y][x].y, maze[y][x].z, maze[y][x].w, maze[y][x].h, maze[y][x].d), maze[y][x].state, maze[y][x].dir));
 		}
 	}
 

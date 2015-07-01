@@ -27,4 +27,7 @@
 #include "MazeEngeneer.h"
 
 
+float ToDegrees(float angle);
+float mod(float a, float N);
+
 // TODO: reference additional headers your program requires here

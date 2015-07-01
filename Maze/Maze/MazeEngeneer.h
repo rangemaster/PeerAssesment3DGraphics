@@ -5,6 +5,10 @@
 #define DIFFICULTY_HARD 3
 #define DIFFICULTY_EXTREEM 4
 
+#define TILE_WIDTH 11
+#define TILE_HEIGHT 0.1
+#define TILE_DEPTH 11
+
 #include "Messager.h"
 #include "MazePuzzelPart.h"
 #include <string>
