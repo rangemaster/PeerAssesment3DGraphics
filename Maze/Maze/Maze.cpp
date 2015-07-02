@@ -2,6 +2,7 @@
 //
 
 #include "stdafx.h"
+#include <Windows.h>
 using namespace std;
 
 int previousMouseX, previousMouseY;
@@ -11,8 +12,12 @@ float cameraAngle = 0;
 double posx, posy, posz;
 bool p_forward, p_backward, p_left, p_right, p_zoomout, p_zoomin;
 
+
+GLfloat lAmbient[] = { 0.7, 0.7, 0.7, 1.0 };
 vector<Road> *maze_map;
 MazeEngeneer *engeneer;
+
+void PlayBackgroundMusic(){ PlaySound(TEXT("..\\res\\Theme_afgekort.wav"), NULL, SND_ASYNC | SND_LOOP); }
 
 void PopRoad(Road &road)
 {
@@ -35,7 +40,6 @@ void DrawToDisplay()
 	glTranslatef(-posx, -posy, -posz);
 	drawTriangle();
 	glTranslatef(posx, posy, posz);
-	cout << "CameraAngle: " << ToDegrees(cameraAngle) << endl;
 }
 void MoveXP(){ posx += 0.1; }
 void MoveXM(){ posx -= 0.1; }
@@ -85,8 +89,9 @@ void Display()
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(7 * cos(cameraAngle), 2, 7 * sin(cameraAngle), 0, 0, 0, 0, 1, 0);
+	gluLookAt(7 * cos(cameraAngle), 4, 7 * sin(cameraAngle), 0, 0, 0, 0, 1, 0);
 
+	glLightfv(GL_LIGHT0, GL_AMBIENT, lAmbient);
 	glEnable(GL_DEPTH_TEST);
 
 	glTranslatef(posx, posy, posz);
@@ -96,7 +101,7 @@ void Display()
 	glDisable(GL_DEPTH_TEST);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(-1, 1, -1, 1, -10, 10);
+	glOrtho(-1, 1, -1, 1, -5, 10);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
@@ -200,14 +205,18 @@ void GlutInit(int argc, char* argv[])
 void Init(int argc, char* argv[])
 {
 	cout << "Init" << endl;
+	bool succes = true;
 	engeneer = new MazeEngeneer();
 	maze_map = new vector < Road > ;
 
-	engeneer->CreateMaze(DIFFICULTY_EASY);
-	engeneer->ConverMaze(maze_map);
+	succes &= engeneer->CreateMaze(DIFFICULTY_EASY);
+	succes &= engeneer->ConverMaze(maze_map);
 
 	GlutInit(argc, argv);
 
+	PlayBackgroundMusic();
+
+	succes == true ? Messager::Succes("Init succesfull") : Messager::Error("Init failed");
 }
 int _tmain(int argc, char* argv[])
 {
@@ -218,8 +227,6 @@ int _tmain(int argc, char* argv[])
 
 	glutMainLoop();
 
-	cout << "\nHit Enter to exit" << endl;
-	getline(cin, line);
 	return 0;
 }
 

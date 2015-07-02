@@ -18,8 +18,8 @@ class MazeEngeneer
 public:
 	MazeEngeneer();
 	~MazeEngeneer();
-	void CreateMaze(int);
-	void ConverMaze(std::vector<Road> *maze_map);
+	bool CreateMaze(int);
+	bool ConverMaze(std::vector<Road> *maze_map);
 	MazePuzzelPart at(int, int);
 private:
 	MazePuzzelPart maze[MAZE_WIDTH][MAZE_HEIGHT];

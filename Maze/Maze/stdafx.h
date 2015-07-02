@@ -18,6 +18,7 @@
 #include <string>
 #include <math.h>
 #include <gl\GL.h>
+#include <playsoundapi.h>
 #include "Messager.h"
 #include "cube.h"
 #include "triangle.h"

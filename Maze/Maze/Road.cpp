@@ -50,7 +50,6 @@ void Road::drawRoad()
 
 void Road::makeEmptySpot(int dir)
 {
-	Messager::Message("Making Empty Spot");
 	Brick brick = list->at(0);
 	list->push_back(*new Brick(brick.x - (brick.width / 2 - wallThickness / 2), brick.y + brick.height / 2 + wallHeight / 2, brick.z, wallThickness, wallHeight, brick.depth));
 	list->push_back(*new Brick(brick.x + (brick.width / 2 - wallThickness / 2), brick.y + brick.height / 2 + wallHeight / 2, brick.z, wallThickness, wallHeight, brick.depth));
@@ -59,7 +58,6 @@ void Road::makeEmptySpot(int dir)
 }
 void Road::makeDeadEndRoad(int dir)
 {
-	Messager::Message("Making DeadEnd Road");
 	Brick brick = list->at(0);
 	if (dir != ROAD_BACK_FACING)
 		list->push_back(*new Brick(brick.x - (brick.width / 2 - wallThickness / 2), brick.y + brick.height / 2 + wallHeight / 2, brick.z, wallThickness, wallHeight, brick.depth));
@@ -72,7 +70,6 @@ void Road::makeDeadEndRoad(int dir)
 }
 void Road::makeStraightRoad(int dir)
 {
-	Messager::Message("Making Straight Road");
 	Brick brick = list->at(0);
 	if (dir != ROAD_BACK_FACING && dir != ROAD_FRONT_FACING)
 	{
@@ -110,7 +107,6 @@ void Road::makeCornerRoad(int dir)
 }
 void Road::makeTCrossRoad(int dir)
 {
-	Messager::Message("Making T Cross Road");
 	Brick brick = list->at(0);
 	if (dir == ROAD_FRONT_FACING)
 		list->push_back(*new Brick(brick.x - (brick.width / 2 - wallThickness / 2), brick.y + brick.height / 2 + wallHeight / 2, brick.z, wallThickness, wallHeight, brick.depth));
@@ -121,10 +117,7 @@ void Road::makeTCrossRoad(int dir)
 	if (dir == ROAD_RIGHT_FACING)
 		list->push_back(*new Brick(brick.x, brick.y + brick.height / 2 + wallHeight / 2, brick.z + (brick.width / 2 - wallThickness / 2), brick.depth, wallHeight, wallThickness));
 }
-void Road::makeCrossRoad(int dir)
-{
-	Messager::Message("Making Cross Road");
-}
+void Road::makeCrossRoad(int dir){}
 
 Brick Road::at(int index)
 {
