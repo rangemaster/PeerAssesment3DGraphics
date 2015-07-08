@@ -11,14 +11,14 @@ float rotation = M_PI / 2;
 float cameraAngle = 0;
 double posx, posy, posz;
 bool p_forward, p_backward, p_left, p_right, p_zoomout, p_zoomin;
-
+bool moveable = false;
 
 GLfloat lAmbient[] = { 0.7, 0.7, 0.7, 1.0 };
 vector<Road> *maze_map;
 MazeEngeneer *engeneer;
 
 void PlayBackgroundMusic(){ if (!MUTE_MUSIC)PlaySound(TEXT("..\\res\\Theme_afgekort.wav"), NULL, SND_ASYNC | SND_LOOP); }
-
+void ErrorUnableToMove(){ Messager::Error("You are not able to move right now!"); }
 void PopRoad(Road &road)
 {
 	glPushMatrix();
@@ -116,36 +116,40 @@ void Display()
 }
 void SetKeyboard(unsigned char key, bool pressed)
 {
-	switch (key)
+	if (moveable)
 	{
-	case 27:
-		exit(0);
-		break;
-	case '4':
-		cameraAngle -= 0.1;
-		break;
-	case '6':
-		cameraAngle += 0.1;
-		break;
-	case '2':
-		p_zoomout = pressed;
-		break;
-	case '8':
-		p_zoomin = pressed;
-		break;
-	case 'a':
-		p_left = pressed;
-		break;
-	case 'd':
-		p_right = pressed;
-		break;
-	case 'w':
-		p_forward = pressed;
-		break;
-	case 's':
-		p_backward = pressed;
-		break;
+		switch (key)
+		{
+		case 27:
+			exit(0);
+			break;
+		case '4':
+			cameraAngle -= 0.1;
+			break;
+		case '6':
+			cameraAngle += 0.1;
+			break;
+		case '2':
+			p_zoomout = pressed;
+			break;
+		case '8':
+			p_zoomin = pressed;
+			break;
+		case 'a':
+			p_left = pressed;
+			break;
+		case 'd':
+			p_right = pressed;
+			break;
+		case 'w':
+			p_forward = pressed;
+			break;
+		case 's':
+			p_backward = pressed;
+			break;
+		}
 	}
+	else{ ErrorUnableToMove(); }
 }
 void KeyPressed(unsigned char key, int x, int y){ SetKeyboard(key, true); }
 void KeyReleased(unsigned char key, int x, int y){ SetKeyboard(key, false); }
@@ -159,19 +163,23 @@ void MouseButton(int button, int state, int x, int y)
 }
 void MouseMotion(int x, int y)
 {
-	int difX = sqrt(pow(x - previousMouseX, 2));
-	if (x > previousMouseX)
+	if (moveable)
 	{
-		cameraAngle += (double)((double)difX / 20);
-	}
-	else if (x < previousMouseX)
-	{
-		cameraAngle -= (double)((double)difX / 20);
-	}
-	cameraAngle = mod(cameraAngle, M_PI * 2);
+		int difX = sqrt(pow(x - previousMouseX, 2));
+		if (x > previousMouseX)
+		{
+			cameraAngle += (double)((double)difX / 20);
+		}
+		else if (x < previousMouseX)
+		{
+			cameraAngle -= (double)((double)difX / 20);
+		}
+		cameraAngle = mod(cameraAngle, M_PI * 2);
 
-	previousMouseX = x;
-	previousMouseY = y;
+		previousMouseX = x;
+		previousMouseY = y;
+	}
+	else{ ErrorUnableToMove(); }
 }
 void IdleFunc()
 {
