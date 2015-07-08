@@ -8,8 +8,6 @@ using namespace std;
 
 void Road::Init()
 {
-	wallThickness = 0.1;
-	wallHeight = 3;
 	Road::list = new vector < Brick > ;
 }
 Road::Road(Brick &b1, int state, int dir)
@@ -51,35 +49,35 @@ void Road::drawRoad()
 void Road::makeEmptySpot(int dir)
 {
 	Brick brick = list->at(0);
-	list->push_back(*new Brick(brick.x - (brick.width / 2 - wallThickness / 2), brick.y + brick.height / 2 + wallHeight / 2, brick.z, wallThickness, wallHeight, brick.depth));
-	list->push_back(*new Brick(brick.x + (brick.width / 2 - wallThickness / 2), brick.y + brick.height / 2 + wallHeight / 2, brick.z, wallThickness, wallHeight, brick.depth));
-	list->push_back(*new Brick(brick.x, brick.y + brick.height / 2 + wallHeight / 2, brick.z - (brick.width / 2 - wallThickness / 2), brick.depth, wallHeight, wallThickness));
-	list->push_back(*new Brick(brick.x, brick.y + brick.height / 2 + wallHeight / 2, brick.z + (brick.width / 2 - wallThickness / 2), brick.depth, wallHeight, wallThickness));
+	list->push_back(*new Brick(brick.x - (brick.width / 2 - ((double)TILE_WALL_DEPTH /2)), brick.y + brick.height / 2 + ((double)TILE_WALL_HEIGHT /2), brick.z, TILE_WALL_DEPTH, TILE_WALL_HEIGHT, brick.depth));
+	list->push_back(*new Brick(brick.x + (brick.width / 2 - ((double)TILE_WALL_DEPTH /2)), brick.y + brick.height / 2 + ((double)TILE_WALL_HEIGHT /2), brick.z, TILE_WALL_DEPTH, TILE_WALL_HEIGHT, brick.depth));
+	list->push_back(*new Brick(brick.x, brick.y + brick.height / 2 + ((double)TILE_WALL_HEIGHT /2), brick.z - (brick.width / 2 - ((double)TILE_WALL_DEPTH /2)), brick.depth, TILE_WALL_HEIGHT, TILE_WALL_DEPTH));
+	list->push_back(*new Brick(brick.x, brick.y + brick.height / 2 + ((double)TILE_WALL_HEIGHT /2), brick.z + (brick.width / 2 - ((double)TILE_WALL_DEPTH /2)), brick.depth, TILE_WALL_HEIGHT, TILE_WALL_DEPTH));
 }
 void Road::makeDeadEndRoad(int dir)
 {
 	Brick brick = list->at(0);
 	if (dir != ROAD_BACK_FACING)
-		list->push_back(*new Brick(brick.x - (brick.width / 2 - wallThickness / 2), brick.y + brick.height / 2 + wallHeight / 2, brick.z, wallThickness, wallHeight, brick.depth));
+		list->push_back(*new Brick(brick.x - (brick.width / 2 - ((double)TILE_WALL_DEPTH /2)), brick.y + brick.height / 2 + ((double)TILE_WALL_HEIGHT /2), brick.z, TILE_WALL_DEPTH, TILE_WALL_HEIGHT, brick.depth));
 	if (dir != ROAD_FRONT_FACING)
-		list->push_back(*new Brick(brick.x + (brick.width / 2 - wallThickness / 2), brick.y + brick.height / 2 + wallHeight / 2, brick.z, wallThickness, wallHeight, brick.depth));
+		list->push_back(*new Brick(brick.x + (brick.width / 2 - ((double)TILE_WALL_DEPTH /2)), brick.y + brick.height / 2 + ((double)TILE_WALL_HEIGHT /2), brick.z, TILE_WALL_DEPTH, TILE_WALL_HEIGHT, brick.depth));
 	if (dir != ROAD_RIGHT_FACING)
-		list->push_back(*new Brick(brick.x, brick.y + brick.height / 2 + wallHeight / 2, brick.z - (brick.width / 2 - wallThickness / 2), brick.depth, wallHeight, wallThickness));
+		list->push_back(*new Brick(brick.x, brick.y + brick.height / 2 + ((double)TILE_WALL_HEIGHT /2), brick.z - (brick.width / 2 - ((double)TILE_WALL_DEPTH /2)), brick.depth, TILE_WALL_HEIGHT, TILE_WALL_DEPTH));
 	if (dir != ROAD_LEFT_FACING)
-		list->push_back(*new Brick(brick.x, brick.y + brick.height / 2 + wallHeight / 2, brick.z + (brick.width / 2 - wallThickness / 2), brick.depth, wallHeight, wallThickness));
+		list->push_back(*new Brick(brick.x, brick.y + brick.height / 2 + ((double)TILE_WALL_HEIGHT /2), brick.z + (brick.width / 2 - ((double)TILE_WALL_DEPTH /2)), brick.depth, TILE_WALL_HEIGHT, TILE_WALL_DEPTH));
 }
 void Road::makeStraightRoad(int dir)
 {
 	Brick brick = list->at(0);
 	if (dir != ROAD_BACK_FACING && dir != ROAD_FRONT_FACING)
 	{
-		list->push_back(*new Brick(brick.x - (brick.width / 2 - wallThickness / 2), brick.y + brick.height / 2 + wallHeight / 2, brick.z, wallThickness, wallHeight, brick.depth));
-		list->push_back(*new Brick(brick.x + (brick.width / 2 - wallThickness / 2), brick.y + brick.height / 2 + wallHeight / 2, brick.z, wallThickness, wallHeight, brick.depth));
+		list->push_back(*new Brick(brick.x - (brick.width / 2 - ((double)TILE_WALL_DEPTH /2)), brick.y + brick.height / 2 + ((double)TILE_WALL_HEIGHT /2), brick.z, TILE_WALL_DEPTH, TILE_WALL_HEIGHT, brick.depth));
+		list->push_back(*new Brick(brick.x + (brick.width / 2 - ((double)TILE_WALL_DEPTH /2)), brick.y + brick.height / 2 + ((double)TILE_WALL_HEIGHT /2), brick.z, TILE_WALL_DEPTH, TILE_WALL_HEIGHT, brick.depth));
 	}
 	if (dir != ROAD_RIGHT_FACING && dir != ROAD_LEFT_FACING)
 	{
-		list->push_back(*new Brick(brick.x, brick.y + brick.height / 2 + wallHeight / 2, brick.z - (brick.width / 2 - wallThickness / 2), brick.depth, wallHeight, wallThickness));
-		list->push_back(*new Brick(brick.x, brick.y + brick.height / 2 + wallHeight / 2, brick.z + (brick.width / 2 - wallThickness / 2), brick.depth, wallHeight, wallThickness));
+		list->push_back(*new Brick(brick.x, brick.y + brick.height / 2 + ((double)TILE_WALL_HEIGHT /2), brick.z - (brick.width / 2 - ((double)TILE_WALL_DEPTH /2)), brick.depth, TILE_WALL_HEIGHT, TILE_WALL_DEPTH));
+		list->push_back(*new Brick(brick.x, brick.y + brick.height / 2 + ((double)TILE_WALL_HEIGHT /2), brick.z + (brick.width / 2 - ((double)TILE_WALL_DEPTH /2)), brick.depth, TILE_WALL_HEIGHT, TILE_WALL_DEPTH));
 	}
 }
 void Road::makeCornerRoad(int dir)
@@ -88,20 +86,20 @@ void Road::makeCornerRoad(int dir)
 	switch (dir)
 	{
 	case ROAD_FRONT_FACING:
-		list->push_back(*new Brick(brick.x - (brick.width / 2 - wallThickness / 2), brick.y + brick.height / 2 + wallHeight / 2, brick.z, wallThickness, wallHeight, brick.depth)); // Back
-		list->push_back(*new Brick(brick.x, brick.y + brick.height / 2 + wallHeight / 2, brick.z - (brick.width / 2 - wallThickness / 2), brick.depth, wallHeight, wallThickness)); // Right
+		list->push_back(*new Brick(brick.x - (brick.width / 2 - ((double)TILE_WALL_DEPTH /2)), brick.y + brick.height / 2 + ((double)TILE_WALL_HEIGHT /2), brick.z, TILE_WALL_DEPTH, TILE_WALL_HEIGHT, brick.depth)); // Back
+		list->push_back(*new Brick(brick.x, brick.y + brick.height / 2 + ((double)TILE_WALL_HEIGHT /2), brick.z - (brick.width / 2 - ((double)TILE_WALL_DEPTH /2)), brick.depth, TILE_WALL_HEIGHT, TILE_WALL_DEPTH)); // Right
 		break;
 	case ROAD_LEFT_FACING:
-		list->push_back(*new Brick(brick.x, brick.y + brick.height / 2 + wallHeight / 2, brick.z - (brick.width / 2 - wallThickness / 2), brick.depth, wallHeight, wallThickness)); // Right
-		list->push_back(*new Brick(brick.x + (brick.width / 2 - wallThickness / 2), brick.y + brick.height / 2 + wallHeight / 2, brick.z, wallThickness, wallHeight, brick.depth)); // Front
+		list->push_back(*new Brick(brick.x, brick.y + brick.height / 2 + ((double)TILE_WALL_HEIGHT /2), brick.z - (brick.width / 2 - ((double)TILE_WALL_DEPTH /2)), brick.depth, TILE_WALL_HEIGHT, TILE_WALL_DEPTH)); // Right
+		list->push_back(*new Brick(brick.x + (brick.width / 2 - ((double)TILE_WALL_DEPTH /2)), brick.y + brick.height / 2 + ((double)TILE_WALL_HEIGHT /2), brick.z, TILE_WALL_DEPTH, TILE_WALL_HEIGHT, brick.depth)); // Front
 		break;
 	case ROAD_BACK_FACING:
-		list->push_back(*new Brick(brick.x + (brick.width / 2 - wallThickness / 2), brick.y + brick.height / 2 + wallHeight / 2, brick.z, wallThickness, wallHeight, brick.depth)); // Front
-		list->push_back(*new Brick(brick.x, brick.y + brick.height / 2 + wallHeight / 2, brick.z + (brick.width / 2 - wallThickness / 2), brick.depth, wallHeight, wallThickness)); // Left
+		list->push_back(*new Brick(brick.x + (brick.width / 2 - ((double)TILE_WALL_DEPTH /2)), brick.y + brick.height / 2 + ((double)TILE_WALL_HEIGHT /2), brick.z, TILE_WALL_DEPTH, TILE_WALL_HEIGHT, brick.depth)); // Front
+		list->push_back(*new Brick(brick.x, brick.y + brick.height / 2 + ((double)TILE_WALL_HEIGHT /2), brick.z + (brick.width / 2 - ((double)TILE_WALL_DEPTH /2)), brick.depth, TILE_WALL_HEIGHT, TILE_WALL_DEPTH)); // Left
 		break;
 	case ROAD_RIGHT_FACING:
-		list->push_back(*new Brick(brick.x, brick.y + brick.height / 2 + wallHeight / 2, brick.z + (brick.width / 2 - wallThickness / 2), brick.depth, wallHeight, wallThickness)); // Left
-		list->push_back(*new Brick(brick.x - (brick.width / 2 - wallThickness / 2), brick.y + brick.height / 2 + wallHeight / 2, brick.z, wallThickness, wallHeight, brick.depth)); // Back
+		list->push_back(*new Brick(brick.x, brick.y + brick.height / 2 + ((double)TILE_WALL_HEIGHT /2), brick.z + (brick.width / 2 - ((double)TILE_WALL_DEPTH /2)), brick.depth, TILE_WALL_HEIGHT, TILE_WALL_DEPTH)); // Left
+		list->push_back(*new Brick(brick.x - (brick.width / 2 - ((double)TILE_WALL_DEPTH /2)), brick.y + brick.height / 2 + ((double)TILE_WALL_HEIGHT /2), brick.z, TILE_WALL_DEPTH, TILE_WALL_HEIGHT, brick.depth)); // Back
 		break;
 	}
 }
@@ -109,13 +107,13 @@ void Road::makeTCrossRoad(int dir)
 {
 	Brick brick = list->at(0);
 	if (dir == ROAD_FRONT_FACING)
-		list->push_back(*new Brick(brick.x - (brick.width / 2 - wallThickness / 2), brick.y + brick.height / 2 + wallHeight / 2, brick.z, wallThickness, wallHeight, brick.depth));
+		list->push_back(*new Brick(brick.x - (brick.width / 2 - ((double)TILE_WALL_DEPTH /2)), brick.y + brick.height / 2 + ((double)TILE_WALL_HEIGHT /2), brick.z, TILE_WALL_DEPTH, TILE_WALL_HEIGHT, brick.depth));
 	if (dir == ROAD_BACK_FACING)
-		list->push_back(*new Brick(brick.x + (brick.width / 2 - wallThickness / 2), brick.y + brick.height / 2 + wallHeight / 2, brick.z, wallThickness, wallHeight, brick.depth));
+		list->push_back(*new Brick(brick.x + (brick.width / 2 - ((double)TILE_WALL_DEPTH /2)), brick.y + brick.height / 2 + ((double)TILE_WALL_HEIGHT /2), brick.z, TILE_WALL_DEPTH, TILE_WALL_HEIGHT, brick.depth));
 	if (dir == ROAD_LEFT_FACING)
-		list->push_back(*new Brick(brick.x, brick.y + brick.height / 2 + wallHeight / 2, brick.z - (brick.width / 2 - wallThickness / 2), brick.depth, wallHeight, wallThickness));
+		list->push_back(*new Brick(brick.x, brick.y + brick.height / 2 + ((double)TILE_WALL_HEIGHT /2), brick.z - (brick.width / 2 - ((double)TILE_WALL_DEPTH /2)), brick.depth, TILE_WALL_HEIGHT, TILE_WALL_DEPTH));
 	if (dir == ROAD_RIGHT_FACING)
-		list->push_back(*new Brick(brick.x, brick.y + brick.height / 2 + wallHeight / 2, brick.z + (brick.width / 2 - wallThickness / 2), brick.depth, wallHeight, wallThickness));
+		list->push_back(*new Brick(brick.x, brick.y + brick.height / 2 + ((double)TILE_WALL_HEIGHT /2), brick.z + (brick.width / 2 - ((double)TILE_WALL_DEPTH /2)), brick.depth, TILE_WALL_HEIGHT, TILE_WALL_DEPTH));
 }
 void Road::makeCrossRoad(int dir){}
 

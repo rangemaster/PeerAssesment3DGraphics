@@ -15,20 +15,39 @@ bool MazeEngeneer::CreateMaze(int dif)
 {
 	try
 	{
-	float indexX = 0, indexY = 0;
+		float indexX = 0, indexY = 0;
 		for (int y = 0; y < MAZE_HEIGHT; y++)
 		{
 			indexX = 0;
 			for (int x = 0; x < MAZE_WIDTH; x++)
 			{
-				MazeEngeneer::maze[y][x] = MazePuzzelPart(indexY, 0, indexX, TILE_WIDTH, TILE_HEIGHT, TILE_DEPTH, ROAD_TCROSS, ROAD_RIGHT_FACING, 0);
+				int state = ROAD_EMPTY_SPOT;
+				int dir = ROAD_RIGHT_FACING;
+				if (x == 0 || y == 0 || x == MAZE_WIDTH - 1 || y == MAZE_HEIGHT - 1)
+				{
+					if (x == 0 && y == 0 || x == 0 && y == MAZE_HEIGHT - 1 || y == 0 && x == MAZE_WIDTH - 1 || x == MAZE_WIDTH - 1 && y == MAZE_HEIGHT - 1)
+					{
+						state = ROAD_CORNER;
+						dir = (x == 0 && y == 0 ? ROAD_FRONT_FACING : x == 0 && y == MAZE_HEIGHT - 1 ? ROAD_LEFT_FACING : y == 0 && x == MAZE_WIDTH - 1 ? ROAD_RIGHT_FACING : ROAD_BACK_FACING);
+					}
+					else
+					{
+						state = ROAD_TCROSS;
+						dir = (x == 0 ? ROAD_LEFT_FACING : y == 0 ? ROAD_FRONT_FACING : x == MAZE_WIDTH - 1 ? ROAD_RIGHT_FACING : ROAD_BACK_FACING);
+					}
+				}
+				MazeEngeneer::maze[y][x] = MazePuzzelPart(indexY, 0, indexX, TILE_WIDTH, TILE_HEIGHT, TILE_DEPTH, state, dir, 0);
 				indexX += maze[0][0].d / 2;
 			}
 			indexY += maze[0][0].w / 2;
 		}
-		MazeEngeneer::maze[0][0] = MazePuzzelPart(maze[0][0].x, maze[0][0].y, maze[0][0].z, maze[0][0].w, maze[0][0].h, maze[0][0].d, ROAD_CORNER, ROAD_FRONT_FACING, 0);
-		MazeEngeneer::maze[0][1] = MazePuzzelPart(maze[0][1].x, maze[0][1].y, maze[0][1].z, maze[0][1].w, maze[0][1].h, maze[0][1].d, ROAD_TCROSS, ROAD_FRONT_FACING, 0);
-		throw exception();
+		for (int y = MAZE_HEIGHT / 2-1; y < MAZE_HEIGHT / 2 + 2; y++)
+		{
+			for (int x = MAZE_WIDTH / 2-1; x < MAZE_WIDTH / 2 + 2; x++)
+			{
+				MazeEngeneer::maze[y][x] = MazePuzzelPart(maze[y][x].x, maze[y][x].y, maze[y][x].z, maze[y][x].w, maze[y][x].h, maze[y][x].d, ROAD_CROSS, maze[y][x].dir, maze[y][x].special);
+			}
+		}
 	}
 	catch (...)
 	{
@@ -43,7 +62,7 @@ bool MazeEngeneer::ConverMaze(std::vector<Road> *maze_map)
 {
 	try
 	{
-	float index = 0;
+		float index = 0;
 		for (int y = 0; y < MAZE_WIDTH; y++)
 		{
 			for (int x = 0; x < MAZE_HEIGHT; x++)

@@ -20,7 +20,6 @@ public:
 	Brick at(int index);
 private:
 	std::vector<Brick> *list;
-	double wallThickness, wallHeight;
 
 	void Init(void);
 	void makeEmptySpot(int);

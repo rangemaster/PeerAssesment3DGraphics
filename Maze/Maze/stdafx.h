@@ -5,6 +5,7 @@
 
 #pragma once
 #define _USE_MATH_DEFINES
+#define MUTE_MUSIC 1
 
 #include "targetver.h"
 

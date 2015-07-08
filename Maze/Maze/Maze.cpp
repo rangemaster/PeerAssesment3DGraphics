@@ -17,7 +17,7 @@ GLfloat lAmbient[] = { 0.7, 0.7, 0.7, 1.0 };
 vector<Road> *maze_map;
 MazeEngeneer *engeneer;
 
-void PlayBackgroundMusic(){ PlaySound(TEXT("..\\res\\Theme_afgekort.wav"), NULL, SND_ASYNC | SND_LOOP); }
+void PlayBackgroundMusic(){ if (!MUTE_MUSIC)PlaySound(TEXT("..\\res\\Theme_afgekort.wav"), NULL, SND_ASYNC | SND_LOOP); }
 
 void PopRoad(Road &road)
 {
@@ -30,6 +30,8 @@ void PopRoad(Road &road)
 void DrawToDisplay()
 {
 	int index = 0;
+	double pre_x = -1, pre_y = -1, pre_z = -1;
+	Brick brick;
 	for (int x = 0; x < MAZE_WIDTH; x++)
 	{
 		for (int y = 0; y < MAZE_HEIGHT; y++)
@@ -37,6 +39,7 @@ void DrawToDisplay()
 			PopRoad(maze_map->at(index++));
 		}
 	}
+	//cout << index << " object(s) drawn - cur pos: " << posx << ", " << posy << ", " << posz << endl;
 	glTranslatef(-posx, -posy, -posz);
 	drawTriangle();
 	glTranslatef(posx, posy, posz);
@@ -148,7 +151,6 @@ void KeyPressed(unsigned char key, int x, int y){ SetKeyboard(key, true); }
 void KeyReleased(unsigned char key, int x, int y){ SetKeyboard(key, false); }
 void MouseButton(int button, int state, int x, int y)
 {
-	//cout << "Mouse pressed: " << state << ", " << x << ", " << y << endl;
 	if (state == 0)
 	{
 		previousMouseX = x;
@@ -157,16 +159,13 @@ void MouseButton(int button, int state, int x, int y)
 }
 void MouseMotion(int x, int y)
 {
-	//cout << "Mouse moved: " << x << ", " << y << endl;
 	int difX = sqrt(pow(x - previousMouseX, 2));
 	if (x > previousMouseX)
 	{
-		cout << "Moving right [" << difX << "]" << endl;
 		cameraAngle += (double)((double)difX / 20);
 	}
 	else if (x < previousMouseX)
 	{
-		cout << "Moving left [" << difX << "]" << endl;
 		cameraAngle -= (double)((double)difX / 20);
 	}
 	cameraAngle = mod(cameraAngle, M_PI * 2);
