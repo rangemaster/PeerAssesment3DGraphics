@@ -20,6 +20,7 @@
 #include <math.h>
 #include <gl\GL.h>
 #include <playsoundapi.h>
+#include <ctime>
 #include "Messager.h"
 #include "cube.h"
 #include "triangle.h"

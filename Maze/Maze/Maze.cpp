@@ -11,7 +11,8 @@ float rotation = M_PI / 2;
 float cameraAngle = 0;
 double posx, posy, posz;
 bool p_forward, p_backward, p_left, p_right, p_zoomout, p_zoomin;
-bool moveable = false;
+bool moveable = 1;
+clock_t pastTime = -1;
 
 GLfloat lAmbient[] = { 0.7, 0.7, 0.7, 1.0 };
 vector<Road> *maze_map;
@@ -78,6 +79,7 @@ void UpdatePlayerPos()
 		else if (angle >= 225 && angle < 315)
 			(p_forward ? MoveZM() : MoveZP());
 	}
+	cout << "angle: " << 7 * cos(cameraAngle) << "," << 4 << ", " << 7 * sin(cameraAngle) << endl;
 }
 void InitGraphics(){}
 void Display()
@@ -92,7 +94,8 @@ void Display()
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(7 * cos(cameraAngle), 4, 7 * sin(cameraAngle), 0, 0, 0, 0, 1, 0);
+	if (moveable)
+		gluLookAt(7 * cos(cameraAngle), 4, 7 * sin(cameraAngle), 0, 0, 0, 0, 1, 0);
 
 	glLightfv(GL_LIGHT0, GL_AMBIENT, lAmbient);
 	glEnable(GL_DEPTH_TEST);
@@ -116,13 +119,19 @@ void Display()
 }
 void SetKeyboard(unsigned char key, bool pressed)
 {
+	if (pressed)
+		switch (key){
+		case 27:
+			exit(0);
+			break;
+		case 'm':
+			moveable = !moveable;
+			break;
+	}
 	if (moveable)
 	{
 		switch (key)
 		{
-		case 27:
-			exit(0);
-			break;
 		case '4':
 			cameraAngle -= 0.1;
 			break;
@@ -155,11 +164,15 @@ void KeyPressed(unsigned char key, int x, int y){ SetKeyboard(key, true); }
 void KeyReleased(unsigned char key, int x, int y){ SetKeyboard(key, false); }
 void MouseButton(int button, int state, int x, int y)
 {
-	if (state == 0)
+	if (moveable)
 	{
-		previousMouseX = x;
-		previousMouseY = y;
+		if (state == 0)
+		{
+			previousMouseX = x;
+			previousMouseY = y;
+		}
 	}
+	else{ ErrorUnableToMove(); }
 }
 void MouseMotion(int x, int y)
 {
@@ -183,6 +196,26 @@ void MouseMotion(int x, int y)
 }
 void IdleFunc()
 {
+	if (!moveable)
+	{
+		clock_t currentTime = clock();
+		if (pastTime + 1000 < currentTime)
+		{
+			pastTime = currentTime;
+			posx += 0.1;
+
+			glMatrixMode(GL_PROJECTION);
+			glLoadIdentity();
+			gluPerspective(70, width / (float)height, 0.1f, 15.0f);
+
+			glMatrixMode(GL_MODELVIEW);
+			glLoadIdentity();
+			gluLookAt(-4.6, 4, -0.7, 0, 0, 0, 0, 1, 0);
+
+			glLightfv(GL_LIGHT0, GL_AMBIENT, lAmbient);
+			glEnable(GL_DEPTH_TEST);
+		}
+	}
 	rotation = glutGet(GLUT_ELAPSED_TIME) / 50.0f;
 	glutPostRedisplay();
 }
