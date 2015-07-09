@@ -76,3 +76,40 @@ void drawCube(double x, double y, double z, double width, double height, double 
 	glColor3f(1, 1, 0);	glVertex3f(x - wwidth, y + hheight, z + ddepth);
 	glEnd();
 }
+
+void drawTrofee(double x, double y, double z, double width, double height, double depth)
+{
+	double wwidth = (width / 2), hheight = (height / 2), ddepth = (depth / 2);
+	glBegin(GL_QUADS);
+
+	glColor3f(1, 0, 0);	glVertex3f(x - wwidth, y - hheight, z - ddepth);
+	glColor3f(1, 1, 0);	glVertex3f(x - wwidth, y + hheight, z - ddepth);
+	glColor3f(1, 1, 0);	glVertex3f(x - wwidth, y + hheight, z + ddepth);
+	glColor3f(1, 0, 0);	glVertex3f(x - wwidth, y - hheight, z + ddepth);
+
+	glColor3f(1, 0, 0);	glVertex3f(x + wwidth, y - hheight, z - ddepth);
+	glColor3f(1, 1, 0);	glVertex3f(x + wwidth, y + hheight, z - ddepth);
+	glColor3f(1, 1, 0);	glVertex3f(x + wwidth, y + hheight, z + ddepth);
+	glColor3f(1, 0, 0);	glVertex3f(x + wwidth, y - hheight, z + ddepth);
+
+	glColor3f(1, 1, 2);	glVertex3f(x - wwidth, y - hheight, z - ddepth);
+	glColor3f(1, 1, 2);	glVertex3f(x + wwidth, y - hheight, z - ddepth);
+	glColor3f(1, 1, 2);	glVertex3f(x + wwidth, y - hheight, z + ddepth);
+	glColor3f(1, 1, 2);	glVertex3f(x - wwidth, y - hheight, z + ddepth);
+
+	glColor3f(1, 1, 0);	glVertex3f(x - wwidth, y + hheight, z - ddepth);
+	glColor3f(1, 1, 0);	glVertex3f(x + wwidth, y + hheight, z - ddepth);
+	glColor3f(1, 1, 0);	glVertex3f(x + wwidth, y + hheight, z + ddepth);
+	glColor3f(1, 1, 0);	glVertex3f(x - wwidth, y + hheight, z + ddepth);
+
+	glColor3f(1, 0, 0);	glVertex3f(x - wwidth, y - hheight, z - ddepth);
+	glColor3f(1, 0, 0);	glVertex3f(x + wwidth, y - hheight, z - ddepth);
+	glColor3f(1, 1, 0);	glVertex3f(x + wwidth, y + hheight, z - ddepth);
+	glColor3f(1, 1, 0);	glVertex3f(x - wwidth, y + hheight, z - ddepth);
+
+	glColor3f(1, 0, 0);	glVertex3f(x - wwidth, y - hheight, z + ddepth);
+	glColor3f(1, 0, 0);	glVertex3f(x + wwidth, y - hheight, z + ddepth);
+	glColor3f(1, 1, 0);	glVertex3f(x + wwidth, y + hheight, z + ddepth);
+	glColor3f(1, 1, 0);	glVertex3f(x - wwidth, y + hheight, z + ddepth);
+	glEnd();
+}

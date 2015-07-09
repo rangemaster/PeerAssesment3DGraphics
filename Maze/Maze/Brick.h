@@ -3,7 +3,9 @@
 class Brick
 {
 public:
-	double x, y, z, width, height, depth;
+	float x, y, z;
+	double width, height, depth;
+	Brick();
 	Brick(double, double, double, double, double, double);
 	~Brick();
 	double size(void);

@@ -5,6 +5,7 @@
 
 #pragma once
 #define _USE_MATH_DEFINES
+#define MUTE_MUSIC 1
 
 #include "targetver.h"
 
@@ -13,12 +14,20 @@
 
 #include <GL\freeglut.h>
 #include <functional>
+#include <fstream>
+#include <sstream>
 #include <iostream>
 #include <vector>
 #include <string>
 #include <math.h>
 #include <gl\GL.h>
+#include <playsoundapi.h>
+#include <ctime>
 #include "Messager.h"
+#include "ObjModel.h"
+#include "AssetManager.h"
+#include "stb_image.h"
+#include "Texture.h"
 #include "cube.h"
 #include "triangle.h"
 #include "background.h"
@@ -26,5 +35,8 @@
 #include "Road.h"
 #include "MazeEngeneer.h"
 
+
+float ToDegrees(float angle);
+float mod(float a, float N);
 
 // TODO: reference additional headers your program requires here

@@ -11,16 +11,82 @@ MazeEngeneer::~MazeEngeneer()
 	Messager::Succes("Engeneer Deleted");
 }
 
-void MazeEngeneer::CreateMaze(int dif)
+bool MazeEngeneer::CreateMaze(int dif)
 {
+	try
+	{
+		float indexX = 0, indexY = 0;
+		for (int y = 0; y < MAZE_HEIGHT; y++)
+		{
+			indexX = 0;
+			for (int x = 0; x < MAZE_WIDTH; x++)
+			{
+				int state = ROAD_EMPTY_SPOT;
+				int dir = ROAD_RIGHT_FACING;
+				if (x == 0 || y == 0 || x == MAZE_WIDTH - 1 || y == MAZE_HEIGHT - 1)
+				{
+					if (x == 0 && y == 0 || x == 0 && y == MAZE_HEIGHT - 1 || y == 0 && x == MAZE_WIDTH - 1 || x == MAZE_WIDTH - 1 && y == MAZE_HEIGHT - 1)
+					{
+						state = ROAD_CORNER;
+						dir = (x == 0 && y == 0 ? ROAD_FRONT_FACING : x == 0 && y == MAZE_HEIGHT - 1 ? ROAD_LEFT_FACING : y == 0 && x == MAZE_WIDTH - 1 ? ROAD_RIGHT_FACING : ROAD_BACK_FACING);
+					}
+					else
+					{
+						state = ROAD_TCROSS;
+						dir = (x == 0 ? ROAD_LEFT_FACING : y == 0 ? ROAD_FRONT_FACING : x == MAZE_WIDTH - 1 ? ROAD_RIGHT_FACING : ROAD_BACK_FACING);
+					}
+				}
+				MazeEngeneer::maze[y][x] = MazePuzzelPart(indexY, 0, indexX, TILE_WIDTH, TILE_HEIGHT, TILE_DEPTH, state, dir, 0);
+				indexX += maze[0][0].d / 2;
+			}
+			indexY += maze[0][0].w / 2;
+		}
+		for (int y = MAZE_HEIGHT / 2 - 1; y < MAZE_HEIGHT / 2 + 2; y++)
+		{
+			for (int x = MAZE_WIDTH / 2 - 1; x < MAZE_WIDTH / 2 + 2; x++)
+			{
+				MazeEngeneer::maze[y][x] = MazePuzzelPart(maze[y][x].x, maze[y][x].y, maze[y][x].z, maze[y][x].w, maze[y][x].h, maze[y][x].d, ROAD_CROSS, maze[y][x].dir, maze[y][x].special);
+			}
+		}
+		int centerX = MAZE_WIDTH / 2;
+		int y = 1;
+		for (; y < (double)MAZE_HEIGHT / 2; y++){
+			maze[y][centerX] = MazePuzzelPart(maze[y][centerX].x, maze[y][centerX].y, maze[y][centerX].z, maze[y][centerX].w, maze[y][centerX].h, maze[y][centerX].d, ROAD_CROSS, maze[y][centerX].dir, maze[y][centerX].special);
 
+		}
+	}
+	catch (...)
+	{
+		Messager::Error("Maze could not be created");
+		return false;
+	}
 	Messager::Succes("Maze Succesfully created");
+	return true;
 }
 
-void MazeEngeneer::ConverMaze(std::vector<Road> *maze_map)
+bool MazeEngeneer::ConverMaze(std::vector<Road> *maze_map)
 {
-	maze_map->push_back(*new Road(*new Brick(0, 0, 0, 5, 0.1, 5), ROAD_STRAIGHT, ROAD_RIGHT_FACING));
-	maze_map->push_back(*new Road(*new Brick(0, 0, 0, 5, 0.1, 5), ROAD_CORNER, ROAD_RIGHT_FACING));
-	maze_map->push_back(*new Road(*new Brick(0, 0, 0, 5, 0.1, 5), ROAD_EMPTY_SPOT, ROAD_FRONT_FACING));
-	maze_map->push_back(*new Road(*new Brick(0, 0, 0, 5, 0.1, 5), ROAD_CORNER, ROAD_BACK_FACING));
+	try
+	{
+		float index = 0;
+		for (int y = 0; y < MAZE_WIDTH; y++)
+		{
+			for (int x = 0; x < MAZE_HEIGHT; x++)
+			{
+				maze_map->push_back(*new Road(*new Brick(maze[y][x].x, maze[y][x].y, maze[y][x].z, maze[y][x].w, maze[y][x].h, maze[y][x].d), maze[y][x].state, maze[y][x].dir));
+			}
+		}
+	}
+	catch (exception)
+	{
+		Messager::Error("Maze could not be converted");
+		return false;
+	}
+	Messager::Succes("Maze Succesfully converted");
+	return true;
+}
+
+MazePuzzelPart MazeEngeneer::at(int x, int y)
+{
+	return maze[x][y];
 }

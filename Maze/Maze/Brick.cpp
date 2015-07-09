@@ -2,7 +2,7 @@
 #include "Brick.h"
 #include "cube.h"
 
-
+Brick::Brick(){}
 Brick::Brick(double xPos, double yPos, double zPos, double widthBrick, double heightBrick, double depthBrick)
 {
 	x = xPos;
