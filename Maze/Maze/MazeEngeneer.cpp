@@ -41,12 +41,18 @@ bool MazeEngeneer::CreateMaze(int dif)
 			}
 			indexY += maze[0][0].w / 2;
 		}
-		for (int y = MAZE_HEIGHT / 2-1; y < MAZE_HEIGHT / 2 + 2; y++)
+		for (int y = MAZE_HEIGHT / 2 - 1; y < MAZE_HEIGHT / 2 + 2; y++)
 		{
-			for (int x = MAZE_WIDTH / 2-1; x < MAZE_WIDTH / 2 + 2; x++)
+			for (int x = MAZE_WIDTH / 2 - 1; x < MAZE_WIDTH / 2 + 2; x++)
 			{
 				MazeEngeneer::maze[y][x] = MazePuzzelPart(maze[y][x].x, maze[y][x].y, maze[y][x].z, maze[y][x].w, maze[y][x].h, maze[y][x].d, ROAD_CROSS, maze[y][x].dir, maze[y][x].special);
 			}
+		}
+		int centerX = MAZE_WIDTH / 2;
+		int y = 1;
+		for (; y < (double)MAZE_HEIGHT / 2; y++){
+			maze[y][centerX] = MazePuzzelPart(maze[y][centerX].x, maze[y][centerX].y, maze[y][centerX].z, maze[y][centerX].w, maze[y][centerX].h, maze[y][centerX].d, ROAD_CROSS, maze[y][centerX].dir, maze[y][centerX].special);
+
 		}
 	}
 	catch (...)

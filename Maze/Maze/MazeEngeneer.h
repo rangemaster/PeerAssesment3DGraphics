@@ -5,9 +5,9 @@
 #define DIFFICULTY_HARD 3
 #define DIFFICULTY_EXTREEM 4
 
-#define TILE_WIDTH 1
+#define TILE_WIDTH 5
 #define TILE_HEIGHT 0.1
-#define TILE_DEPTH 1
+#define TILE_DEPTH 5
 #define TILE_WALL_HEIGHT 1
 #define TILE_WALL_DEPTH 0.1
 

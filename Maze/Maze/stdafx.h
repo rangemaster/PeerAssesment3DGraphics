@@ -14,6 +14,8 @@
 
 #include <GL\freeglut.h>
 #include <functional>
+#include <fstream>
+#include <sstream>
 #include <iostream>
 #include <vector>
 #include <string>
@@ -22,6 +24,10 @@
 #include <playsoundapi.h>
 #include <ctime>
 #include "Messager.h"
+#include "ObjModel.h"
+#include "AssetManager.h"
+#include "stb_image.h"
+#include "Texture.h"
 #include "cube.h"
 #include "triangle.h"
 #include "background.h"

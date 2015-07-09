@@ -10,11 +10,13 @@ int width, height;
 float rotation = M_PI / 2;
 float cameraAngle = 0;
 double posx, posy, posz;
+double trofee_pos_x, trofee_pos_y, trofee_pos_z;
 bool p_forward, p_backward, p_left, p_right, p_zoomout, p_zoomin;
-bool moveable = 1;
-clock_t pastTime = -1;
+bool moveable = 1, trofeeCollected = 0;
+clock_t pastTime = -1, countdownTime = -1;
 
 GLfloat lAmbient[] = { 0.7, 0.7, 0.7, 1.0 };
+vector<pair<int, ObjModel*>>models;
 vector<Road> *maze_map;
 MazeEngeneer *engeneer;
 
@@ -30,6 +32,8 @@ void PopRoad(Road &road)
 }
 void DrawToDisplay()
 {
+	//DrawTrofee();
+
 	int index = 0;
 	double pre_x = -1, pre_y = -1, pre_z = -1;
 	Brick brick;
@@ -41,22 +45,42 @@ void DrawToDisplay()
 		}
 	}
 	//cout << index << " object(s) drawn - cur pos: " << posx << ", " << posy << ", " << posz << endl;
+
 	glTranslatef(-posx, -posy, -posz);
 	drawTriangle();
 	glTranslatef(posx, posy, posz);
+
 }
-void MoveXP(){ posx += 0.1; }
-void MoveXM(){ posx -= 0.1; }
-void MoveZP(){ posz += 0.1; }
-void MoveZM(){ posz -= 0.1; }
+
+double stepSize = TILE_WIDTH;
+void MoveXP(){ if (posx < 0)posx += stepSize; }
+void MoveXM(){ if (posx > -TILE_WIDTH * (MAZE_WIDTH - 1))  posx -= stepSize; }
+void MoveZP(){ if (posz < 0) posz += stepSize; }
+void MoveZM(){ if (posz > -TILE_DEPTH * (MAZE_HEIGHT - 1)) posz -= stepSize; }
+
+bool CloseEnough(double des, double pos)
+{
+	return true;
+}
 void UpdatePlayerPos()
 {
-	float angle = ToDegrees(cameraAngle);
-	if (p_zoomout)
-		posy -= 0.1;
-	else if (p_zoomin)
-		posy += 0.1;
+	//for (pair<int, ObjModel*> model : models)
+	//{
+	if (posx == -trofee_pos_x  && posz == -trofee_pos_z && !trofeeCollected)
+	{
+		Messager::Succes("You reached the trofee");
+		trofeeCollected = true;
+		models.clear();
+		posy = 0;
+	}
+	//}
 
+	if (p_zoomout)
+		posy -= 0.05;
+	else if (p_zoomin)
+		posy += 0.05;
+
+	float angle = ToDegrees(cameraAngle);
 	if (p_left || p_right)
 	{
 		if (angle < 45 || angle >= 315)
@@ -67,6 +91,8 @@ void UpdatePlayerPos()
 			(p_left ? MoveZP() : MoveZM());
 		else if (angle >= 225 && angle < 315)
 			(p_left ? MoveXM() : MoveXP());
+		p_left = false;
+		p_right = false;
 	}
 	if (p_forward || p_backward)
 	{
@@ -78,10 +104,25 @@ void UpdatePlayerPos()
 			(p_forward ? MoveXM() : MoveXP());
 		else if (angle >= 225 && angle < 315)
 			(p_forward ? MoveZM() : MoveZP());
+		p_forward = false;
+		p_backward = false;
 	}
-	cout << "angle: " << 7 * cos(cameraAngle) << "," << 4 << ", " << 7 * sin(cameraAngle) << endl;
+	//cout << "pos: " << posx << ", " << posy << ", " << posz << "angle: " << 7 * cos(cameraAngle) << "," << 4 << ", " << 7 * sin(cameraAngle) << endl;
 }
-void InitGraphics(){}
+bool InitGraphics(){
+	//glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_LIGHTING);
+	//glEnable(GL_LIGHT0);
+	try{
+		models.push_back(pair<int, ObjModel*>(1, new ObjModel("models/bloemetje/PrimRoseP.obj")));
+	}
+	catch (...){
+		Messager::Error("Could not load model trofee");
+		return false;
+	}
+	Messager::Succes("Trofee succesfull loaded");
+	return true;
+}
 void Display()
 {
 	UpdatePlayerPos();
@@ -95,7 +136,7 @@ void Display()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	if (moveable)
-		gluLookAt(7 * cos(cameraAngle), 4, 7 * sin(cameraAngle), 0, 0, 0, 0, 1, 0);
+		gluLookAt(7 * cos(cameraAngle), 5, 7 * sin(cameraAngle), 0, 0, 0, 0, 1, 0);
 
 	glLightfv(GL_LIGHT0, GL_AMBIENT, lAmbient);
 	glEnable(GL_DEPTH_TEST);
@@ -103,6 +144,14 @@ void Display()
 	glTranslatef(posx, posy, posz);
 
 	DrawToDisplay();
+
+	//glTranslatef(-posx, -posy, -posz);
+
+	if (!trofeeCollected){
+		glTranslatef(trofee_pos_x, trofee_pos_y, trofee_pos_z);
+		glRotatef(rotation, 0, 1, 0);
+		models[0].second->draw();
+	}
 
 	glDisable(GL_DEPTH_TEST);
 	glMatrixMode(GL_PROJECTION);
@@ -138,10 +187,10 @@ void SetKeyboard(unsigned char key, bool pressed)
 		case '6':
 			cameraAngle += 0.1;
 			break;
-		case '2':
+		case '8':
 			p_zoomout = pressed;
 			break;
-		case '8':
+		case '2':
 			p_zoomin = pressed;
 			break;
 		case 'a':
@@ -196,6 +245,21 @@ void MouseMotion(int x, int y)
 }
 void IdleFunc()
 {
+	if (trofeeCollected)
+	{
+		clock_t currentTime = clock();
+		if (pastTime + 100 < currentTime)
+		{
+			pastTime = currentTime;
+			posy -= 0.5;
+			std::stringstream ss;
+			ss << (posy == -15 ? "Almost there" : posy == -10 ? "Were out of here" : posy == -5 ? "Let's go!" : "");
+			if (ss.str() != "")
+				Messager::Message(ss.str());
+			if (posy < -20)
+				exit(1);
+		}
+	}
 	if (!moveable)
 	{
 		clock_t currentTime = clock();
@@ -225,13 +289,14 @@ void Reshape(GLint width, GLint height)
 	::height = height;
 	glViewport(0, 0, width, height);
 }
-void GlutInit(int argc, char* argv[])
+bool GlutInit(int argc, char* argv[])
 {
+	bool succes = true;
 	glutInit(&argc, argv);
 	glutInitWindowSize(1024, 768);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 	glutCreateWindow("Remake Demo");
-	InitGraphics();
+	succes &= InitGraphics();
 	glutDisplayFunc(Display);
 	glutReshapeFunc(Reshape);
 	//glutIgnoreKeyRepeat(1);
@@ -240,6 +305,7 @@ void GlutInit(int argc, char* argv[])
 	glutMouseFunc(MouseButton);
 	glutMotionFunc(MouseMotion);
 	glutIdleFunc(IdleFunc);
+	return succes;
 }
 
 void Init(int argc, char* argv[])
@@ -249,10 +315,17 @@ void Init(int argc, char* argv[])
 	engeneer = new MazeEngeneer();
 	maze_map = new vector < Road > ;
 
+	posx = 0;
+	posy = -TILE_HEIGHT;
+	posz = 0;
+
+	trofee_pos_x = (((double)MAZE_WIDTH - 1)*TILE_WIDTH) / 2;
+	trofee_pos_y = TILE_HEIGHT * 5;
+	trofee_pos_z = (((double)MAZE_HEIGHT - 1)*TILE_DEPTH) / 2;
+
 	succes &= engeneer->CreateMaze(DIFFICULTY_EASY);
 	succes &= engeneer->ConverMaze(maze_map);
-
-	GlutInit(argc, argv);
+	succes &= GlutInit(argc, argv);
 
 	PlayBackgroundMusic();
 
